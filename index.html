@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+.circle {
+    width: 50px;
+    height: 50px;
+    position:absolute;
+    right: 0px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    background: red;
+}
+#container{
+    background: white;
+    width:500px;
+    position:absolute;
+    left: 500px;
+    height: 50px;
+}
+
+    </style>
+</head>
+<body>
+    <div>
+        <video controls=controls class="trackSupported" width="1000px" height="100">
+          <source src="sounds/test.mp3" type="audio/mpeg">
+          <track src="results.vtt" label="English subtitles" kind="metadata" srclang="en" default>
+          Your browser does not support the audio element.
+        </video>
+    </div>
+
+    <div id="container">
+    </div>
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+var videoElement = document.querySelector("video");
+var textTracks = videoElement.textTracks; // one for each track element
+var textTrack = textTracks[0]; // corresponds to the first track 
+var count = 1;
+
+textTrack.oncuechange = function (){
+  // "this" is a textTrack
+  var cue = this.activeCues[0]; // assuming there is only one active cue
+  var circle = document.querySelector('#circle');
+  var obj = JSON.parse(cue.text);
+  console.log(obj.volume);
+
+  var div = $('<div/>', {
+    id : "c"+count,
+    class: 'circle'
+  }).appendTo('#container');
+
+  $(div).animate({
+     left: '-=500'
+    }, 1000, "linear", function() {
+     $(this).hide({},500,"linear",
+      function(){
+        $("#c"+count).remove();
+      });
+  });
+}
+
+</script>
+
+</body>
+</html>

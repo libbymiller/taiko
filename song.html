@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+
+
+
+#score {
+  font-size:50pt;
+}
+#title{
+  font-size:50pt;
+}
+
+#bigsplat{
+    height: 100%; 
+    width: 100%; 
+    background-color: #777;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    opacity: 0;
+}
+
+
+.circle {
+    width: 200px;
+    height: 200px;
+    position:absolute;
+    left: 0px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+    background: red;
+}
+
+.circle1 {
+    width: 200px;
+    height: 200px;
+    position:absolute;
+    left: 0px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+    background: green;
+}
+
+.redcircle {
+    width: 200px;
+    height: 200px;
+    position:absolute;
+    left:450px;
+    top:200px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+    background: red;
+    display:block;
+}
+
+.greencircle {
+    width: 200px;
+    height: 200px;
+    position:absolute;
+    left:450px;
+    top:200px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+    background: green;
+    display:block;
+}
+
+.bluecircle {
+    width: 200px;
+    height: 200px;
+    position:absolute;
+    left:600px;
+    top:200px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+    background: blue;
+    display:block;
+}
+
+.blackcircle {
+    width: 200px;
+    height: 200px;
+    position:absolute;
+    left:600px;
+    top:200px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+    background: black;
+    display:block;
+}
+
+#container{
+    background: white;
+    width:100%;
+}
+.verticalLine {
+  border-right: thick solid #000000;
+  height: 1000px;
+  width: 870px;
+  position:absolute;
+  color:black;
+}
+    </style>
+</head>
+<body onload="go();">
+
+    <div id="score">
+      <span id="title"></span> score: <span id="scorevalue">0</span>
+    </div>
+
+    <div>
+        <video id="video" controls=controls class="trackSupported" width="1000px" height="100" autoplay>
+          <source id="source" src="" type="audio/mpeg">
+          <track id="track" src="" label="English subtitles" kind="metadata" srclang="en" default>
+          <track id="track1" src="" label="English subtitles" kind="metadata" srclang="en" default>
+          Your browser does not support the audio element.
+        </video>
+    </div>
+
+    <div id="container">
+     <div id="bigsplat">
+     </div>
+    </div>
+
+<script src="jquery-1.12.4.js"></script>
+<script src="jquery-ui.js"></script>
+<script src="metadata.json"></script>
+<script type="text/javascript">
+
+var the_vid_number = 0;
+
+var videoElement, textTracks, textTrack, textTrack1; 
+var allthetracks = [];
+var allthetracks1 = [];
+
+function go(){
+//console.log(metadata);
+  the_vid_number = window.location.hash.substr(1);
+  console.log(the_vid_number);
+  console.log(metadata);
+
+  var i = parseInt(the_vid_number);
+  console.log(metadata[i]);
+ 
+  var v = metadata[the_vid_number]["url"];
+  var t = metadata[the_vid_number]["title"];
+//oops
+  var tr1 = metadata[the_vid_number]["vtt"];
+  var tr = metadata[the_vid_number]["vtt1"];
+  $("#source").attr("src",v);
+  $("#track").attr("src",tr);
+  $("#track1").attr("src",tr1);
+  $("#title").html(t);
+  $("#video").get(0).load();
+  $("#video").get(0).play();
+
+
+}
+
+videoElement = document.querySelector("video");
+textTracks = videoElement.textTracks; // one for each track element
+textTrack = textTracks[0]; // corresponds to the first track 
+textTrack1 = textTracks[1]; // corresponds to the second track 
+
+var count = 1;
+var score = 0;
+
+
+$(document).ready(function(){
+  $("#video").on(
+    "timeupdate", 
+    function(event){
+      var foo = this.currentTime;
+   //    thetimenow = this.currentTime + 0.5;
+    });
+});
+
+
+function back(){
+   console.log("selecting "+the_vid_number);
+   window.location.href = "index.html#"+the_vid_number;
+}
+
+function boom(cueid){
+      score = score + 1;
+      $("#scorevalue").html(score);
+            $(cueid).animate({
+                 width:500,
+                 height:500,
+                 borderTopLeftRadius: 250, 
+                 borderTopRightRadius: 250, 
+                 borderBottomLeftRadius: 250, 
+                 borderBottomRightRadius: 250
+
+              }, 200, "linear", function() {
+                 $(this).hide();
+            });
+
+}
+
+
+function circle(css_class, height){
+
+            var div = $('<div/>', {
+             class: css_class,
+             css: {'top': height+"px"}
+            }).appendTo('#container');
+
+            $(div).animate({
+
+                 width:250,
+                 height:250,
+                 borderTopLeftRadius: 125, 
+                 borderTopRightRadius: 125, 
+                 borderBottomLeftRadius: 125, 
+                 borderBottomRightRadius: 125
+
+              }, 200, "linear", function() {
+                 $(this).hide({},500,"linear",
+                   function(){
+                 });
+            });
+
+}
+
+
+function bigsplat(){
+console.log("BIGSPLAT!!!");
+  score = score - 1;
+  $( "#bigsplat" ).fadeTo( "fast" , 1, function() {
+    $( "#bigsplat" ).fadeTo( "fast" , 0, function() {
+    });
+  });
+
+}
+
+
+function hitRight(){
+  console.log("hitRight");
+  var cues = textTrack.activeCues;
+
+  for(var i = cues.length-1; i >= 0; i--){
+    var c = cues[i];
+    if(c){
+      var thetimenow = videoElement.currentTime;
+      if(Math.abs((c.startTime+1.2) - thetimenow) < 0.5){
+        boom("#cr"+c.id);
+      }
+    }
+  }
+  if(cues.length==0){
+    score = score - 1;
+    $("#scorevalue").html(score);
+    bigsplat();
+  }
+
+}
+
+function hitLeft(){
+  console.log("hitLeft");
+  var cues = textTrack1.activeCues;
+
+  for(var i = cues.length-1; i >= 0; i--){
+    var c = cues[i];
+    if(c){
+      var thetimenow = videoElement.currentTime;
+      if(Math.abs((c.startTime+1.2) - thetimenow) < 0.5){
+        boom("#cl"+c.id);
+      }
+    }
+  }
+  if(cues.length==0){
+    score = score - 1;
+    $("#scorevalue").html(score);
+    bigsplat();
+  }
+
+}
+
+
+
+window.addEventListener("keydown", function(e) {
+//        console.log(e.keyCode);
+        if (e.keyCode === 82) {
+            e.preventDefault();
+            hitRight();
+        }
+        if (e.keyCode === 76) {
+            e.preventDefault();
+            hitLeft();
+        }
+        if (e.keyCode === 66) {
+            e.preventDefault();
+            back();
+        }
+
+}, false);
+
+
+textTrack.oncuechange = function (){
+  // "this" is a textTrack
+//  console.log(this.activeCues);
+//  var cue = this.activeCues[this.activeCues.length-1]; // assuming there is only one active cue
+
+  var cue = this.activeCues[0]; // assuming there is only one active cue, or newest cue
+  var circle = document.querySelector('#circle');
+  //console.log(cue);
+  if(cue && cue.text){
+    var obj = JSON.parse(cue.text);
+    var freq = obj.frequency;
+
+    var top = parseInt(freq)*2+"px";
+    var div = $('<div/>', {
+      id : "cr"+cue.id,
+      class: 'circle',
+      css: {'top': "200px"}
+    }).appendTo('#container');
+
+    $(div).animate({
+       left: '750'
+      }, 750, "linear", function() {
+       $(this).hide({},50,"linear",
+        function(){
+        });
+    });
+
+    count = count + 1;
+  }
+
+}
+
+textTrack1.oncuechange = function (){
+  // "this" is a textTrack
+  var cue = this.activeCues[0]; // assuming there is only one active cue
+  var circle = document.querySelector('#circle1');
+  console.log(cue);
+  if(cue && cue.text){
+    var obj = JSON.parse(cue.text);
+    var freq = obj.frequency;
+
+    var top = parseInt(freq)*2+"px";
+    var div = $('<div/>', {
+      id : "cl"+cue.id,
+      class: 'circle1',
+      css: {'top': "400px"}
+    }).appendTo('#container');
+
+    $(div).animate({
+       left: '750'
+      }, 750, "linear", function() {
+       $(this).hide({},50,"linear",
+        function(){
+        });
+    });
+
+    count = count + 1;
+  }
+
+}
+
+
+</script>
+<div class="verticalLine">
+</div>
+<div id="content"></div>
+</body>
+</html>

@@ -2,70 +2,113 @@
 <html>
 <head>
     <style>
-.circle {
-    width: 200px;
-    height: 200px;
-    position:absolute;
-    right: 0px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    border-radius: 100px;
-    background: red;
+
+.title{
 }
+
 #container{
     background: white;
-    width:500px;
-    position:absolute;
-    left: 500px;
-    height: 500px;
-    top: 300px;
 }
-
+.song{
+  height:50px;
+  width:300px;
+  float:left;
+  border-style: solid;
+  border-width: 5px;
+  padding: 30px;
+  margin: 30px;
+  font-size:30pt;
+}
     </style>
 </head>
-<body>
-    <div>
-        <video controls=controls class="trackSupported" width="1000px" height="100">
-          <source src="sounds/test.mp3" type="audio/mpeg">
-          <track src="results.vtt" label="English subtitles" kind="metadata" srclang="en" default>
-          Your browser does not support the audio element.
-        </video>
-    </div>
+<body onload="go()">
 
     <div id="container">
+        <div class="song">0</div>
+        <div class="song">1</div>
+        <div class="song">2</div>
+        <div class="song">3</div>
+        <div class="song">4</div>
+        <div class="song">5</div>
+        <div class="song">6</div>
+        <div class="song">7</div>
     </div>
 
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="jquery-1.12.4.js"></script>
+<script src="jquery-ui.js"></script>
+<script src="metadata.json"></script>
 <script type="text/javascript">
-var videoElement = document.querySelector("video");
-var textTracks = videoElement.textTracks; // one for each track element
-var textTrack = textTracks[0]; // corresponds to the first track 
-var count = 1;
 
-textTrack.oncuechange = function (){
-  // "this" is a textTrack
-  var cue = this.activeCues[0]; // assuming there is only one active cue
-  var circle = document.querySelector('#circle');
-  var obj = JSON.parse(cue.text);
-  console.log(obj.volume);
 
-  var div = $('<div/>', {
-    id : "c"+count,
-    class: 'circle'
-  }).appendTo('#container');
+function go(){
+  var the_place_number = window.location.hash.substr(1);
+  console.log("go");
+  console.log(parseInt(the_place_number));
 
-  $(div).animate({
-     left: '-=500'
-    }, 1000, "linear", function() {
-     $(this).hide({},500,"linear",
-      function(){
-        $("#c"+count).remove();
-      });
-  });
+  if(the_place_number && parseInt(the_place_number)){
+     console.log("the_place_number "+parseInt(the_place_number));
+     count = parseInt(the_place_number);
+     navigate();
+  }else{
+     console.log("no place number");
+     count = 0;
+     navigate();
+  }
 }
 
-</script>
 
+var count = 0;
+
+function navigate(){
+   //get the count'th child of container and highlight it
+  console.log("navigating "+count);
+
+  var children = $("#container").children();
+
+  $('#container').children().each(function (i) {
+    $(this).html(metadata[i].title);
+    if(i == count){
+      $(this).css("color", "red");
+    }else{
+      $(this).css("color", "black");
+    }
+  });
+
+  if(count > $('#container').children().length){
+    count = 0;
+  }else{
+    count = count + 1;
+  }
+}
+
+function select(){
+   console.log("selecting "+count);
+   window.location.href = "song.html#"+(count-1);
+}
+
+window.addEventListener("keydown", function(e) {
+
+        console.log(e.keyCode);
+
+        if (e.keyCode === 76) { //r
+            e.preventDefault();
+            navigate();
+        }
+/*
+        if (e.keyCode === 66) {
+            e.preventDefault();
+            select();
+        }
+*/
+        if (e.keyCode === 82) { //l
+            e.preventDefault();
+            select();
+        }
+
+}, false);
+
+
+
+</script>
 </body>
 </html>

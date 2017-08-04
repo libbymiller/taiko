@@ -1,0 +1,50 @@
+var metadata = [
+  {
+    "url": "sounds/52_girls.mp3",
+    "title": "52 girls",
+    "vtt": "tracks/52_girls.vtt",
+    "vtt1": "tracks/52_girls1.vtt"
+  },
+  {
+    "url": "sounds/comfortably_numb.mp3",
+    "title": "comfortably numb",
+    "vtt": "tracks/comfortably_numb.vtt",
+    "vtt1": "tracks/comfortably_numb1.vtt"
+  },
+  {
+    "url": "sounds/face_to_face.mp3",
+    "title": "face to face",
+    "vtt": "tracks/face_to_face.vtt",
+    "vtt1": "tracks/face_to_face1.vtt"
+  },
+  {
+    "url": "sounds/lust_for_life.mp3",
+    "title": "lust for life",
+    "vtt": "tracks/lust_for_life.vtt",
+    "vtt1": "tracks/lust_for_life1.vtt"
+  },
+  {
+    "url": "sounds/philadelphia_freedom.mp3",
+    "title": "philadelphia freedom",
+    "vtt": "tracks/philadelphia_freedom.vtt",
+    "vtt1": "tracks/philadelphia_freedom1.vtt"
+  },
+  {
+    "url": "sounds/sky_family_drone.mp3",
+    "title": "sky family drone",
+    "vtt": "tracks/sky_family_drone.vtt",
+    "vtt1": "tracks/sky_family_drone1.vtt"
+  },
+  {
+    "url": "sounds/stand_and_deliver.mp3",
+    "title": "stand and deliver",
+    "vtt": "tracks/stand_and_deliver.vtt",
+    "vtt1": "tracks/stand_and_deliver1.vtt"
+  },
+  {
+    "url": "sounds/the_perfect_kiss.mp3",
+    "title": "the perfect kiss",
+    "vtt": "tracks/the_perfect_kiss.vtt",
+    "vtt1": "tracks/the_perfect_kiss1.vtt"
+  }
+]

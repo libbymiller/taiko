@@ -3,10 +3,11 @@
 <head>
     <style>
 
-
-
 #score {
   font-size:50pt;
+}
+#thescore {
+  float:right;
 }
 #title{
   font-size:50pt;
@@ -20,6 +21,7 @@
     left: 0px;
     top: 0px;
     opacity: 0;
+    z-index:-10;
 }
 
 
@@ -113,11 +115,11 @@
 <body onload="go();">
 
     <div id="score">
-      <span id="title"></span> score: <span id="scorevalue">0</span>
+      <span id="title"></span><span id="thescore">Score: <span id="scorevalue">0</span></span>
     </div>
 
     <div>
-        <video id="video" controls=controls class="trackSupported" width="1000px" height="100" autoplay>
+        <video id="video" controls="controls" class="trackSupported" width="1000px" height="100" autoplay>
           <source id="source" src="" type="audio/mpeg">
           <track id="track" src="" label="English subtitles" kind="metadata" srclang="en" default>
           <track id="track1" src="" label="English subtitles" kind="metadata" srclang="en" default>

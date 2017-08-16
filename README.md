@@ -1,8 +1,16 @@
-npm install --save web-audio-engine
+Install dependencies
 
-peaks_as_vtt_cues.js > results.vtt
+    brew install ffmpeg
+    npm install --save web-audio-engine node-static
 
-npm install -g node-static
+See scripts/ to generate the files
 
-static -p 8000
+You need to have some mp3s to make it work (in /sounds)
+
+run server:
+
+    static -p 8000
+
+use 'l' to navigate, 'r' to select, 'b' to go back.
+
 

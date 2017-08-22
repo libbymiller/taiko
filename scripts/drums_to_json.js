@@ -75,7 +75,7 @@ function getPeaks(data2, p_data) {
     }
   }
 
-/*
+
   // We then sort the peaks according to volume...
 
   peaks.sort(function(a, b) {
@@ -87,7 +87,7 @@ function getPeaks(data2, p_data) {
   peaks.sort(function(a, b) {
     return a.position - b.position;
   });
-*/
+
   return peaks;
 }
 
@@ -193,31 +193,17 @@ if(process.argv.length > 3){
         context.oncomplete = function(e) {
           var str = "WEBVTT FILE\n\n";
           var buffer = e.renderedBuffer;
-//          var peaks = getPeaks([buffer.getChannelData(0), buffer.getChannelData(1)]);
           var peaks = getPeaks(buffer, proc_data);
-//          console.log(peaks);
+          var cues = [];
           for(var i = 0; i<peaks.length; i++){
-
-             if(peaks[i]["volume"] > 0.009){
+//             if(peaks[i]["volume"] > 0.009){ // test only
+//             if(peaks[i]["volume"] > 0.2){
                var secs = (peaks[i]["position"])/44100;
-               //console.log(getTimeFormatted(secs)); 
                str = str +""+(count)+"\n";
-
-//for this one, we need to make time to it to arrive, so 
-               if(secs >= 1.0){
-//                 str = str + getTimeFormatted(secs-1.0)+" --> "+getTimeFormatted(secs)+"\n";
-                 str = str + getTimeFormatted(secs)+" --> "+getTimeFormatted(secs+0.4)+"\n";
-      
-                 var cue = {};
-                 //console.log(peaks[i]);
-                 cue["volume"] = peaks[i]["volume"];
-                 cue["frequency"] = peaks[i]["frequency"];
-                 var cue_str = JSON.stringify(cue, null, 2);
-                 str = str + cue_str+" \n\n";
-                 count = count + 1;
-               }
+               cues.push({"id":count, "start":secs, "volume":peaks[i]["volume"]});     
+               count = count + 1;
              }
-          }
-          console.log(str);          
+//          }
+          console.log(JSON.stringify(cues, null, 2));          
         }
 }

@@ -8,7 +8,7 @@ to convert them all to wavs (required to generate cues)
 
 then 
 
-    ruby wav_to_cues.rb
+    ruby wav_to_json.rb
 
 to generate the track files
 

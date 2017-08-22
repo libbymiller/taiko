@@ -15,9 +15,9 @@ files.each do |line|
   puts line
   url = line.strip
 
-  vtt = line.gsub("../sounds/","tracks/")
-  vtt = vtt.gsub(".mp3",".vtt")
-  vtt1 = vtt.gsub(".vtt","1.vtt")
+  json = line.gsub("../sounds/","tracks/")
+  json = json.gsub(".mp3",".json")
+  json1 = json.gsub(".json","1.json")
 
   url = line.gsub("../","")
   metadata = line.strip
@@ -25,7 +25,7 @@ files.each do |line|
   metadata = metadata.gsub("../sounds/", "")
   metadata = metadata.gsub(".mp3", "")
 
-  music = {"url"=>url, "title"=> metadata, "vtt"=>vtt, "vtt1"=>vtt1 }
+  music = {"url"=>url, "title"=> metadata, "json"=>json, "json1"=>json1 }
   data.push(music)
   count = count + 1
 end

@@ -47,84 +47,25 @@
     background: green;
 }
 
-.redcircle {
-    width: 200px;
-    height: 200px;
-    position:absolute;
-    left:450px;
-    top:200px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    border-radius: 100px;
-    background: red;
-    display:block;
-}
-
-.greencircle {
-    width: 200px;
-    height: 200px;
-    position:absolute;
-    left:450px;
-    top:200px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    border-radius: 100px;
-    background: green;
-    display:block;
-}
-
-.bluecircle {
-    width: 200px;
-    height: 200px;
-    position:absolute;
-    left:600px;
-    top:200px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    border-radius: 100px;
-    background: blue;
-    display:block;
-}
-
-.blackcircle {
-    width: 200px;
-    height: 200px;
-    position:absolute;
-    left:600px;
-    top:200px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    border-radius: 100px;
-    background: black;
-    display:block;
-}
 
 #container{
     background: white;
     width:100%;
 }
 .verticalLine {
-  border-right: thick solid #000000;
+  border-right: 400px solid #000000; 
   height: 1000px;
-  width: 870px;
+  width: 450px;
   position:absolute;
   color:black;
+  z-index: -1;
 }
     </style>
 </head>
-<body onload="go();">
+<body>
 
     <div id="score">
       <span id="title"></span><span id="thescore">Score: <span id="scorevalue">0</span></span>
-    </div>
-
-    <div>
-        <video id="video" controls="controls" class="trackSupported" width="1000px" height="100" autoplay>
-          <source id="source" src="" type="audio/mpeg">
-          <track id="track" src="" label="English subtitles" kind="metadata" srclang="en" default>
-          <track id="track1" src="" label="English subtitles" kind="metadata" srclang="en" default>
-          Your browser does not support the audio element.
-        </video>
     </div>
 
     <div id="container">
@@ -139,12 +80,69 @@
 
 var the_vid_number = 0;
 
-var videoElement, textTracks, textTrack, textTrack1; 
-var allthetracks = [];
-var allthetracks1 = [];
+var count = 1;
+var score = 0;
 
-function go(){
-//console.log(metadata);
+var requestAnimationFrame = window.requestAnimationFrame;
+
+var audio;
+var whereweare = 0;
+var whereweare1 = 0;
+var complete = false;
+var cues;
+var cues1;
+
+// https://stackoverflow.com/questions/37149520/html5-audio-timeupdate-precision
+function trackCurrentTime() {
+  // `this` : `audio`
+  //console.log(this.currentTime);
+  var cue = cues[whereweare];
+  if (cue && this.currentTime > cue.start - 1.0) {
+    console.log("got cue "+cue.id);
+    whereweare = whereweare + 1;
+    var div = $('<div/>', {
+      id : "cr"+cue.id,
+      class: 'circle',
+      css: {'top': "200px"}
+    }).appendTo('#container');
+
+      $(div).animate({
+         left: '1500'
+        }, 2500, "linear", function() {
+         $(this).hide({},50,"linear",
+          function(){
+          });
+      });
+
+  } else {
+    var cue1 = cues1[whereweare1];
+
+    if (cue1 && this.currentTime > cue1.start - 1.0) {
+      console.log("got cue1 "+cue1.id);
+      whereweare1 = whereweare1 + 1;
+      var div = $('<div/>', {
+        id : "cl"+cue1.id,
+        class: 'circle1',
+        css: {'top': "500px"}
+      }).appendTo('#container');
+
+        $(div).animate({
+           left: '1500'
+          }, 2500, "linear", function() {
+           $(this).hide({},50,"linear",
+            function(){
+            });
+        });
+    }
+     
+  }
+  if(complete==false){  
+    requestAnimationFrame(trackCurrentTime.bind(this))
+  }
+}
+
+$(document).ready(function(){
+
   the_vid_number = window.location.hash.substr(1);
   console.log(the_vid_number);
   console.log(metadata);
@@ -154,82 +152,72 @@ function go(){
  
   var v = metadata[the_vid_number]["url"];
   var t = metadata[the_vid_number]["title"];
-//oops
-  var tr1 = metadata[the_vid_number]["vtt"];
-  var tr = metadata[the_vid_number]["vtt1"];
-  $("#source").attr("src",v);
-  $("#track").attr("src",tr);
-  $("#track1").attr("src",tr1);
+
+  var tr = metadata[the_vid_number]["json"];
+  var tr1 = metadata[the_vid_number]["json1"];
+
   $("#title").html(t);
-  $("#video").get(0).load();
-  $("#video").get(0).play();
 
+//get the json files
 
-}
+  var jqxhr = $.ajax( tr )
+  .done(function(data) {
+      console.log( "success" );
+      console.log(data);
+      cues = data;
+  })
+  .fail(function() {
+      console.log( "error" );
+  })
+  .always(function() {
 
-videoElement = document.querySelector("video");
-textTracks = videoElement.textTracks; // one for each track element
-textTrack = textTracks[0]; // corresponds to the first track 
-textTrack1 = textTracks[1]; // corresponds to the second track 
+    var jqxhr1 = $.ajax( tr1 )
+    .done(function(data) {
+      console.log( "success" );
+      console.log(data);
+      cues1 = data;
 
-var count = 1;
-var score = 0;
+    })
+    .fail(function() {
+      console.log( "error" );
+    })
+    .always(function() {
 
+      audio = new Audio(v);
+      audio.onpause = function(e) {
+        console.log("stopped!");
+        complete = true;
+        console.log(e.target.currentTime)
+      }
+      audio.load();
+      audio.play();
+      trackCurrentTime.call(audio);
 
-$(document).ready(function(){
-  $("#video").on(
-    "timeupdate", 
-    function(event){
-      var foo = this.currentTime;
-   //    thetimenow = this.currentTime + 0.5;
     });
+  });
+
 });
-
-
-function back(){
-   console.log("selecting "+the_vid_number);
-   window.location.href = "index.html#"+the_vid_number;
-}
-
-function boom(cueid){
-      score = score + 1;
-      $("#scorevalue").html(score);
-            $(cueid).animate({
-                 width:500,
-                 height:500,
-                 borderTopLeftRadius: 250, 
-                 borderTopRightRadius: 250, 
-                 borderBottomLeftRadius: 250, 
-                 borderBottomRightRadius: 250
-
-              }, 200, "linear", function() {
-                 $(this).hide();
-            });
-
-}
 
 
 function circle(css_class, height){
 
-            var div = $('<div/>', {
-             class: css_class,
-             css: {'top': height+"px"}
-            }).appendTo('#container');
+  var div = $('<div/>', {
+    class: css_class,
+    css: {'top': height+"px"}
+  }).appendTo('#container');
 
-            $(div).animate({
-
-                 width:250,
-                 height:250,
-                 borderTopLeftRadius: 125, 
-                 borderTopRightRadius: 125, 
-                 borderBottomLeftRadius: 125, 
-                 borderBottomRightRadius: 125
-
-              }, 200, "linear", function() {
-                 $(this).hide({},500,"linear",
-                   function(){
-                 });
-            });
+  $(div).animate({
+    width:250,
+    height:250,
+    borderTopLeftRadius: 125, 
+    borderTopRightRadius: 125, 
+    borderBottomLeftRadius: 125, 
+    borderBottomRightRadius: 125
+  }, 200, "linear", function() {
+//    $(this).hide({},500,"linear",
+//      function(){
+//    });
+  });
 
 }
 
@@ -244,130 +232,87 @@ console.log("BIGSPLAT!!!");
 
 }
 
+function boom(cueid){
+  $(cueid).hide();
+  console.log("boom! "+cueid)
+//  $(cueid).css({"width":"400px","height":"400px", "border-radius": "200px"});
+  console.log($(cueid));
+  score = score + 1;
+  $("#scorevalue").html(score);
+}
+
+
+function nearestCue(){
+  //dunno, bit arbitrary
+  var ct = audio.currentTime;
+  var match = false;
+  for(var i = whereweare-5; i < whereweare; i++){
+    var cue = cues[i];
+    if(cue){
+      console.log(cue.start+" "+ct+" "+whereweare+" "+i);
+      if(Math.abs((cue.start) - ct) < 0.2){
+        boom("#cr"+cue.id);
+        match = true;
+        break;
+      }
+    }
+  } 
+  if(match==false){
+    bigsplat();
+  }
+}
+
+function nearestCue1(){
+  //dunno, bit arbitrary
+  var match = false;
+  var ct = audio.currentTime;
+  for(var i = whereweare1-5; i < whereweare1; i++){
+    var cue1 = cues1[i];
+    if(cue1){
+      console.log(cue1.start+" "+ct+" "+whereweare1+" "+i);
+      if(Math.abs((cue1.start) - ct) < 0.2){
+        boom("#cl"+cue1.id);
+        match = true;
+        break;
+      }
+    }
+  } 
+  if(match==false){
+    bigsplat();
+  }
+}
 
 function hitRight(){
   console.log("hitRight");
-  var cues = textTrack.activeCues;
-
-  for(var i = cues.length-1; i >= 0; i--){
-    var c = cues[i];
-    if(c){
-      var thetimenow = videoElement.currentTime;
-      if(Math.abs((c.startTime+1.2) - thetimenow) < 0.5){
-        boom("#cr"+c.id);
-      }
-    }
-  }
-  if(cues.length==0){
-    score = score - 1;
-    $("#scorevalue").html(score);
-    bigsplat();
-  }
-
+  nearestCue();
 }
 
 function hitLeft(){
   console.log("hitLeft");
-  var cues = textTrack1.activeCues;
-
-  for(var i = cues.length-1; i >= 0; i--){
-    var c = cues[i];
-    if(c){
-      var thetimenow = videoElement.currentTime;
-      if(Math.abs((c.startTime+1.2) - thetimenow) < 0.5){
-        boom("#cl"+c.id);
-      }
-    }
-  }
-  if(cues.length==0){
-    score = score - 1;
-    $("#scorevalue").html(score);
-    bigsplat();
-  }
-
+  nearestCue1();
 }
 
-
+function back(){
+   console.log("selecting "+the_vid_number);
+   window.location.href = "index.html#"+the_vid_number;
+}
 
 window.addEventListener("keydown", function(e) {
-//        console.log(e.keyCode);
-        if (e.keyCode === 82) {
-            e.preventDefault();
-            hitRight();
-        }
-        if (e.keyCode === 76) {
-            e.preventDefault();
-            hitLeft();
-        }
-        if (e.keyCode === 66) {
-            e.preventDefault();
-            back();
-        }
+//console.log(e.keyCode);
+  if (e.keyCode === 82) {
+    e.preventDefault();
+    hitRight();
+  }
+  if (e.keyCode === 76) {
+    e.preventDefault();
+    hitLeft();
+  }
+  if (e.keyCode === 66) {
+    e.preventDefault();
+    back();
+  }
 
 }, false);
-
-
-textTrack.oncuechange = function (){
-  // "this" is a textTrack
-//  console.log(this.activeCues);
-//  var cue = this.activeCues[this.activeCues.length-1]; // assuming there is only one active cue
-
-  var cue = this.activeCues[0]; // assuming there is only one active cue, or newest cue
-  var circle = document.querySelector('#circle');
-  //console.log(cue);
-  if(cue && cue.text){
-    var obj = JSON.parse(cue.text);
-    var freq = obj.frequency;
-
-    var top = parseInt(freq)*2+"px";
-    var div = $('<div/>', {
-      id : "cr"+cue.id,
-      class: 'circle',
-      css: {'top': "200px"}
-    }).appendTo('#container');
-
-    $(div).animate({
-       left: '750'
-      }, 750, "linear", function() {
-       $(this).hide({},50,"linear",
-        function(){
-        });
-    });
-
-    count = count + 1;
-  }
-
-}
-
-textTrack1.oncuechange = function (){
-  // "this" is a textTrack
-  var cue = this.activeCues[0]; // assuming there is only one active cue
-  var circle = document.querySelector('#circle1');
-  console.log(cue);
-  if(cue && cue.text){
-    var obj = JSON.parse(cue.text);
-    var freq = obj.frequency;
-
-    var top = parseInt(freq)*2+"px";
-    var div = $('<div/>', {
-      id : "cl"+cue.id,
-      class: 'circle1',
-      css: {'top': "400px"}
-    }).appendTo('#container');
-
-    $(div).animate({
-       left: '750'
-      }, 750, "linear", function() {
-       $(this).hide({},50,"linear",
-        function(){
-        });
-    });
-
-    count = count + 1;
-  }
-
-}
-
 
 </script>
 <div class="verticalLine">

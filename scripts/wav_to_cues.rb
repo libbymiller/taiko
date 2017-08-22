@@ -7,12 +7,12 @@ files.each do |f|
 
 #  `node peaks_as_vtt_cues.js #{f}  > #{fn}`
 
-  puts "node drums_to_cues.js #{f} low  > #{fn}"
-  `node drums_to_cues.js #{f} "low"  > #{fn1}`
+  puts "node drums_to_cues.js #{f} low  > #{fn1}"
+  `node drums_to_cues.js #{f} "high"  > #{fn1}`
   sleep(1)
 
   puts "node drums_to_cues.js #{f} high  > #{fn}"
-  `node drums_to_cues.js #{f} "high"  > #{fn}`
+  `node drums_to_cues.js #{f} "low"  > #{fn}`
 
   sleep(1)
 

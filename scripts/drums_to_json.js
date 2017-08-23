@@ -75,7 +75,7 @@ function getPeaks(data2, p_data) {
     }
   }
 
-
+/*
   // We then sort the peaks according to volume...
 
   peaks.sort(function(a, b) {
@@ -87,7 +87,7 @@ function getPeaks(data2, p_data) {
   peaks.sort(function(a, b) {
     return a.position - b.position;
   });
-
+*/
   return peaks;
 }
 
@@ -196,14 +196,14 @@ if(process.argv.length > 3){
           var peaks = getPeaks(buffer, proc_data);
           var cues = [];
           for(var i = 0; i<peaks.length; i++){
-//             if(peaks[i]["volume"] > 0.009){ // test only
+             if(peaks[i]["volume"] > 0.009){ // test only
 //             if(peaks[i]["volume"] > 0.2){
                var secs = (peaks[i]["position"])/44100;
                str = str +""+(count)+"\n";
                cues.push({"id":count, "start":secs, "volume":peaks[i]["volume"]});     
                count = count + 1;
              }
-//          }
+          }
           console.log(JSON.stringify(cues, null, 2));          
         }
 }

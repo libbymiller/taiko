@@ -21,17 +21,9 @@
 }
     </style>
 </head>
-<body onload="go()">
+<body>
 
     <div id="container">
-        <div class="song">0</div>
-        <div class="song">1</div>
-        <div class="song">2</div>
-        <div class="song">3</div>
-        <div class="song">4</div>
-        <div class="song">5</div>
-        <div class="song">6</div>
-        <div class="song">7</div>
     </div>
 
 <script src="jquery-1.12.4.js"></script>
@@ -40,10 +32,17 @@
 <script type="text/javascript">
 
 
-function go(){
+$(document).ready(function(){
   var the_place_number = window.location.hash.substr(1);
   console.log("go");
   console.log(parseInt(the_place_number));
+
+  for (var i=0; i< metadata.length; i++){
+    var div = $('<div/>', {
+      class: 'song'
+    }).appendTo('#container');
+    div.html(metadata[i].title);
+  }
 
   if(the_place_number && parseInt(the_place_number)){
      console.log("the_place_number "+parseInt(the_place_number));
@@ -54,7 +53,7 @@ function go(){
      count = 0;
      navigate();
   }
-}
+});
 
 
 var count = 0;
@@ -79,6 +78,8 @@ function navigate(){
   }else{
     count = count + 1;
   }
+
+
 }
 
 function select(){

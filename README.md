@@ -1,13 +1,13 @@
 Install dependencies
 
     brew install ffmpeg
-    npm install --save web-audio-engine node-static
+    npm install --save web-audio-engine 
 
-See scripts/ to generate the files
+    npm install -g node-static
 
-You need to have some mp3s to make it work (in /sounds)
+See scripts/README.md to generate the files. You need to have some mp3s to make it work (in /sounds)
 
-run server:
+Then run the server:
 
     static -p 8000
 
